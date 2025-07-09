@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { User, Target, Calendar, Settings, Calculator } from 'lucide-react';
 import CalorieCalculator from './CalorieCalculator';
+import AdBanner from './AdBanner';
 
 interface ProfileProps {
   data: any;
