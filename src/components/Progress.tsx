@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TrendingUp, Calendar, Target, Award } from 'lucide-react';
+import AdBanner from './AdBanner';
 
 interface ProgressProps {
   data: any;
