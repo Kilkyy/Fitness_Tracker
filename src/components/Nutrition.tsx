@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, Apple, Zap, Droplets, Shield } from 'lucide-react';
+import AdBanner from './AdBanner';
 
 interface NutritionProps {
   data: any;
