@@ -5,9 +5,11 @@ import CalorieCalculator from './CalorieCalculator';
 interface ProfileProps {
   data: any;
   updateData: (newData: any) => void;
+  isPremium?: boolean;
+  onUpgrade?: () => void;
 }
 
-const Profile: React.FC<ProfileProps> = ({ data, updateData }) => {
+const Profile: React.FC<ProfileProps> = ({ data, updateData, isPremium = false, onUpgrade }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [showCalculator, setShowCalculator] = useState(false);
   const [formData, setFormData] = useState({
@@ -196,6 +198,11 @@ const Profile: React.FC<ProfileProps> = ({ data, updateData }) => {
         </form>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {!isPremium && (
+            <div className="lg:col-span-3 mb-6">
+              <AdBanner position="inline" onUpgrade={onUpgrade} isPremium={isPremium} />
+            </div>
+          )}
           <div className="lg:col-span-2">
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <div className="flex items-center mb-6">

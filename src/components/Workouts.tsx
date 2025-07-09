@@ -6,9 +6,11 @@ import WorkoutDetails from './WorkoutDetails';
 interface WorkoutsProps {
   data: any;
   updateData: (newData: any) => void;
+  isPremium?: boolean;
+  onUpgrade?: () => void;
 }
 
-const Workouts: React.FC<WorkoutsProps> = ({ data, updateData }) => {
+const Workouts: React.FC<WorkoutsProps> = ({ data, updateData, isPremium = false, onUpgrade }) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showBuilder, setShowBuilder] = useState(false);
   const [selectedWorkout, setSelectedWorkout] = useState<any>(null);
@@ -185,6 +187,13 @@ const Workouts: React.FC<WorkoutsProps> = ({ data, updateData }) => {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Inline Ad every 3 workouts */}
+        {!isPremium && data.workouts?.length > 0 && data.workouts.length % 3 === 0 && (
+          <div className="md:col-span-2 lg:col-span-3">
+            <AdBanner position="inline" onUpgrade={onUpgrade} isPremium={isPremium} />
+          </div>
+        )}
+        
         {data.workouts?.map((workout: any) => (
           <div
             key={workout.id}

@@ -4,9 +4,11 @@ import { TrendingUp, Calendar, Target, Award } from 'lucide-react';
 interface ProgressProps {
   data: any;
   updateData: (newData: any) => void;
+  isPremium?: boolean;
+  onUpgrade?: () => void;
 }
 
-const Progress: React.FC<ProgressProps> = ({ data, updateData }) => {
+const Progress: React.FC<ProgressProps> = ({ data, updateData, isPremium = false, onUpgrade }) => {
   const [showAddWeight, setShowAddWeight] = useState(false);
   const [newWeight, setNewWeight] = useState('');
 
@@ -239,6 +241,11 @@ const Progress: React.FC<ProgressProps> = ({ data, updateData }) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {!isPremium && (
+          <div className="lg:col-span-2 mb-4">
+            <AdBanner position="inline" onUpgrade={onUpgrade} isPremium={isPremium} />
+          </div>
+        )}
         <WeightChart />
         <WorkoutChart />
       </div>

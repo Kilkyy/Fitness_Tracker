@@ -4,9 +4,11 @@ import { Plus, Apple, Zap, Droplets, Shield } from 'lucide-react';
 interface NutritionProps {
   data: any;
   updateData: (newData: any) => void;
+  isPremium?: boolean;
+  onUpgrade?: () => void;
 }
 
-const Nutrition: React.FC<NutritionProps> = ({ data, updateData }) => {
+const Nutrition: React.FC<NutritionProps> = ({ data, updateData, isPremium = false, onUpgrade }) => {
   const [activeTab, setActiveTab] = useState('macros');
   const [showAddForm, setShowAddForm] = useState(false);
   const [selectedFood, setSelectedFood] = useState('');
@@ -214,6 +216,11 @@ const Nutrition: React.FC<NutritionProps> = ({ data, updateData }) => {
 
       {activeTab === 'macros' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {!isPremium && (
+            <div className="md:col-span-2 lg:col-span-4 mb-4">
+              <AdBanner position="inline" onUpgrade={onUpgrade} isPremium={isPremium} />
+            </div>
+          )}
           <MacroCard
             title="Calories"
             value={todaysNutrition.calories}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
 import Workouts from './components/Workouts';
@@ -7,6 +8,7 @@ import Supplements from './components/Supplements';
 import Progress from './components/Progress';
 import Profile from './components/Profile';
 import { useLocalStorage } from './hooks/useLocalStorage';
+import PremiumModal from './components/PremiumModal';
 
 const initialData = {
   profile: {
@@ -60,30 +62,60 @@ const initialData = {
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [data, setData] = useLocalStorage('fitness-tracker-data', initialData);
+  const [isPremium, setIsPremium] = useState(false);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
+
+  useEffect(() => {
+    // Check if user has premium subscription
+    const premiumStatus = localStorage.getItem('fitness-tracker-premium');
+    setIsPremium(premiumStatus === 'true');
+  }, []);
+
+  const handleUpgrade = () => {
+    setShowPremiumModal(true);
+  };
+
+  const handlePremiumSuccess = () => {
+    setIsPremium(true);
+    setShowPremiumModal(false);
+  };
 
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <Dashboard data={data} />;
+        return <Dashboard data={data} isPremium={isPremium} onUpgrade={handleUpgrade} />;
       case 'workouts':
-        return <Workouts data={data} updateData={setData} />;
+        return <Workouts data={data} updateData={setData} isPremium={isPremium} onUpgrade={handleUpgrade} />;
       case 'nutrition':
-        return <Nutrition data={data} updateData={setData} />;
+        return <Nutrition data={data} updateData={setData} isPremium={isPremium} onUpgrade={handleUpgrade} />;
       case 'supplements':
-        return <Supplements data={data} updateData={setData} />;
+        return <Supplements data={data} updateData={setData} isPremium={isPremium} onUpgrade={handleUpgrade} />;
       case 'progress':
-        return <Progress data={data} updateData={setData} />;
+        return <Progress data={data} updateData={setData} isPremium={isPremium} onUpgrade={handleUpgrade} />;
       case 'profile':
-        return <Profile data={data} updateData={setData} />;
+        return <Profile data={data} updateData={setData} isPremium={isPremium} onUpgrade={handleUpgrade} />;
       default:
-        return <Dashboard data={data} />;
+        return <Dashboard data={data} isPremium={isPremium} onUpgrade={handleUpgrade} />;
     }
   };
 
   return (
-    <Layout activeTab={activeTab} setActiveTab={setActiveTab}>
-      {renderContent()}
-    </Layout>
+    <>
+      <Layout 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab}
+        isPremium={isPremium}
+        onUpgrade={handleUpgrade}
+      >
+        {renderContent()}
+      </Layout>
+      
+      <PremiumModal
+        isOpen={showPremiumModal}
+        onClose={() => setShowPremiumModal(false)}
+        onSuccess={handlePremiumSuccess}
+      />
+    </>
   );
 }
 
