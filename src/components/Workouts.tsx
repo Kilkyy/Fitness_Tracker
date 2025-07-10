@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { Plus, Calendar, Clock, Dumbbell, Play, Settings, Flame, Eye } from 'lucide-react';
+import { Plus, Calendar, Clock, Dumbbell, Play, Settings, Flame, Eye, TrendingUp, Target, Activity } from 'lucide-react';
 import WorkoutBuilder from './WorkoutBuilder';
 import WorkoutDetails from './WorkoutDetails';
+import CalorieCalculator from './CalorieCalculator';
+import BodyHeatMap from './BodyHeatMap';
+import NutritionAnalysis from './NutritionAnalysis';
+import WeightAnalysis from './WeightAnalysis';
 
 interface WorkoutsProps {
   data: any;
@@ -15,37 +19,44 @@ const Workouts: React.FC<WorkoutsProps> = ({ data, updateData, isPremium = false
   const [showBuilder, setShowBuilder] = useState(false);
   const [selectedWorkout, setSelectedWorkout] = useState<any>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [showCalorieCalculator, setShowCalorieCalculator] = useState(false);
+  const [showBodyHeatMap, setShowBodyHeatMap] = useState(false);
+  const [showNutritionAnalysis, setShowNutritionAnalysis] = useState(false);
+  const [showWeightAnalysis, setShowWeightAnalysis] = useState(false);
 
   const workoutTemplates = [
     {
       name: 'Push Day',
       exercises: [
-        { name: 'Bench Press', sets: 3, reps: 12, weight: 135 },
-        { name: 'Shoulder Press', sets: 3, reps: 10, weight: 80 },
-        { name: 'Tricep Dips', sets: 3, reps: 15, weight: 0 },
-        { name: 'Push-ups', sets: 3, reps: 20, weight: 0 },
+        { name: 'Bench Press', sets: 3, reps: 12, weight: 135, bodyPart: 'chest' },
+        { name: 'Shoulder Press', sets: 3, reps: 10, weight: 80, bodyPart: 'shoulders' },
+        { name: 'Tricep Dips', sets: 3, reps: 15, weight: 0, bodyPart: 'triceps' },
+        { name: 'Push-ups', sets: 3, reps: 20, weight: 0, bodyPart: 'chest' },
       ],
       duration: 45,
+      caloriesPerMinute: 8,
     },
     {
       name: 'Pull Day',
       exercises: [
-        { name: 'Pull-ups', sets: 3, reps: 8, weight: 0 },
-        { name: 'Bent-over Row', sets: 3, reps: 12, weight: 100 },
-        { name: 'Lat Pulldown', sets: 3, reps: 12, weight: 120 },
-        { name: 'Bicep Curls', sets: 3, reps: 15, weight: 30 },
+        { name: 'Pull-ups', sets: 3, reps: 8, weight: 0, bodyPart: 'back' },
+        { name: 'Bent-over Row', sets: 3, reps: 12, weight: 100, bodyPart: 'back' },
+        { name: 'Lat Pulldown', sets: 3, reps: 12, weight: 120, bodyPart: 'back' },
+        { name: 'Bicep Curls', sets: 3, reps: 15, weight: 30, bodyPart: 'biceps' },
       ],
       duration: 40,
+      caloriesPerMinute: 7,
     },
     {
       name: 'Leg Day',
       exercises: [
-        { name: 'Squats', sets: 4, reps: 10, weight: 185 },
-        { name: 'Deadlifts', sets: 3, reps: 8, weight: 225 },
-        { name: 'Leg Press', sets: 3, reps: 15, weight: 270 },
-        { name: 'Calf Raises', sets: 4, reps: 20, weight: 50 },
+        { name: 'Squats', sets: 4, reps: 10, weight: 185, bodyPart: 'legs' },
+        { name: 'Deadlifts', sets: 3, reps: 8, weight: 225, bodyPart: 'legs' },
+        { name: 'Leg Press', sets: 3, reps: 15, weight: 270, bodyPart: 'legs' },
+        { name: 'Calf Raises', sets: 4, reps: 20, weight: 50, bodyPart: 'calves' },
       ],
       duration: 50,
+      caloriesPerMinute: 9,
     },
   ];
 
@@ -98,17 +109,51 @@ const Workouts: React.FC<WorkoutsProps> = ({ data, updateData, isPremium = false
     setShowDetails(true);
   };
 
+  const handlePremiumFeature = (feature: string) => {
+    if (!isPremium && onUpgrade) {
+      onUpgrade();
+    } else {
+      switch (feature) {
+        case 'calorie':
+          setShowCalorieCalculator(true);
+          break;
+        case 'heatmap':
+          setShowBodyHeatMap(true);
+          break;
+        case 'nutrition':
+          setShowNutritionAnalysis(true);
+          break;
+        case 'weight':
+          setShowWeightAnalysis(true);
+          break;
+      }
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Workouts</h1>
         <div className="flex space-x-2">
           <button
+            onClick={() => handlePremiumFeature('calorie')}
+            className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
+              isPremium 
+                ? 'bg-orange-600 text-white hover:bg-orange-700' 
+                : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+            }`}
+          >
+            <Flame className="h-4 w-4 mr-2" />
+            Calorie Calculator
+            {!isPremium && <span className="ml-1 text-xs">PRO</span>}
+          </button>
+          <button
             onClick={() => setShowBuilder(true)}
             className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Settings className="h-4 w-4 mr-2" />
             Custom Workout
+            {!isPremium && <span className="ml-1 text-xs">PRO</span>}
           </button>
           <button
             onClick={() => setShowAddForm(true)}
@@ -120,11 +165,82 @@ const Workouts: React.FC<WorkoutsProps> = ({ data, updateData, isPremium = false
         </div>
       </div>
 
+      {/* Premium Analytics Section */}
+      {isPremium && (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <button
+            onClick={() => setShowBodyHeatMap(true)}
+            className="p-4 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg hover:from-red-600 hover:to-orange-600 transition-all"
+          >
+            <Activity className="h-6 w-6 mb-2" />
+            <div className="text-sm font-medium">Body Heat Map</div>
+            <div className="text-xs opacity-90">Muscle Group Analysis</div>
+          </button>
+          <button
+            onClick={() => setShowNutritionAnalysis(true)}
+            className="p-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all"
+          >
+            <Target className="h-6 w-6 mb-2" />
+            <div className="text-sm font-medium">Nutrition Analysis</div>
+            <div className="text-xs opacity-90">Macro & Micro Tracking</div>
+          </button>
+          <button
+            onClick={() => setShowWeightAnalysis(true)}
+            className="p-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg hover:from-blue-600 hover:to-indigo-600 transition-all"
+          >
+            <TrendingUp className="h-6 w-6 mb-2" />
+            <div className="text-sm font-medium">Weight Analysis</div>
+            <div className="text-xs opacity-90">Progress Tracking</div>
+          </button>
+          <button
+            onClick={() => setShowCalorieCalculator(true)}
+            className="p-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all"
+          >
+            <Flame className="h-6 w-6 mb-2" />
+            <div className="text-sm font-medium">Calorie Calculator</div>
+            <div className="text-xs opacity-90">Burn Analysis</div>
+          </button>
+        </div>
+      )}
+
       {showBuilder && (
         <WorkoutBuilder
           data={data}
           updateData={updateData}
           onClose={() => setShowBuilder(false)}
+          isPremium={isPremium}
+          onUpgrade={onUpgrade}
+        />
+      )}
+
+      {showCalorieCalculator && (
+        <CalorieCalculator
+          data={data}
+          updateData={updateData}
+          onClose={() => setShowCalorieCalculator(false)}
+        />
+      )}
+
+      {showBodyHeatMap && (
+        <BodyHeatMap
+          data={data}
+          onClose={() => setShowBodyHeatMap(false)}
+        />
+      )}
+
+      {showNutritionAnalysis && (
+        <NutritionAnalysis
+          data={data}
+          updateData={updateData}
+          onClose={() => setShowNutritionAnalysis(false)}
+        />
+      )}
+
+      {showWeightAnalysis && (
+        <WeightAnalysis
+          data={data}
+          updateData={updateData}
+          onClose={() => setShowWeightAnalysis(false)}
         />
       )}
 
@@ -155,9 +271,13 @@ const Workouts: React.FC<WorkoutsProps> = ({ data, updateData, isPremium = false
                     <Clock className="h-4 w-4 mr-1" />
                     {template.duration} minutes
                   </div>
-                  <div className="flex items-center">
+                  <div className="flex items-center mb-1">
                     <Dumbbell className="h-4 w-4 mr-1" />
                     {template.exercises.length} exercises
+                  </div>
+                  <div className="flex items-center">
+                    <Flame className="h-4 w-4 mr-1" />
+                    ~{template.duration * template.caloriesPerMinute} calories
                   </div>
                 </div>
                 <div className="space-y-1">
@@ -187,13 +307,6 @@ const Workouts: React.FC<WorkoutsProps> = ({ data, updateData, isPremium = false
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Inline Ad every 3 workouts */}
-        {!isPremium && data.workouts?.length > 0 && data.workouts.length % 3 === 0 && (
-          <div className="md:col-span-2 lg:col-span-3">
-            <AdBanner position="inline" onUpgrade={onUpgrade} isPremium={isPremium} />
-          </div>
-        )}
-        
         {data.workouts?.map((workout: any) => (
           <div
             key={workout.id}
