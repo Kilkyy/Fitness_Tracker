@@ -215,9 +215,7 @@ const Workouts: React.FC<WorkoutsProps> = ({ data, updateData, isPremium = false
 
       {showCalorieCalculator && (
         <CalorieCalculator
-          data={data}
-          updateData={updateData}
-          onClose={() => setShowCalorieCalculator(false)}
+          profile={data.profile}
         />
       )}
 
