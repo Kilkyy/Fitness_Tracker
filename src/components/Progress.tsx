@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { TrendingUp, Calendar, Target, Award } from 'lucide-react';
-import AdBanner from './AdBanner';
 
 interface ProgressProps {
   data: any;
@@ -242,11 +241,6 @@ const Progress: React.FC<ProgressProps> = ({ data, updateData, isPremium = false
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {!isPremium && (
-          <div className="lg:col-span-2 mb-4">
-            <AdBanner position="inline" onUpgrade={onUpgrade} isPremium={isPremium} />
-          </div>
-        )}
         <WeightChart />
         <WorkoutChart />
       </div>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { TrendingUp, Target, Calendar, Award } from 'lucide-react';
-import AdBanner from './AdBanner';
 
 interface DashboardProps {
   data: any;
@@ -102,13 +101,6 @@ const Dashboard: React.FC<DashboardProps> = ({ data, isPremium = false, onUpgrad
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Inline Ad */}
-        {!isPremium && (
-          <div className="lg:col-span-2">
-            <AdBanner position="inline" onUpgrade={onUpgrade} isPremium={isPremium} />
-          </div>
-        )}
-        
         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Today's Workout</h3>
           {todaysWorkout ? (
@@ -161,13 +153,6 @@ const Dashboard: React.FC<DashboardProps> = ({ data, isPremium = false, onUpgrad
           </div>
         </div>
       </div>
-      
-      {/* Sidebar Ad */}
-      {!isPremium && (
-        <div className="mt-6">
-          <AdBanner position="sidebar" onUpgrade={onUpgrade} isPremium={isPremium} />
-        </div>
-      )}
     </div>
   );
 };

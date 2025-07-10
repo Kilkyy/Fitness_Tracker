@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Plus, Apple, Zap, Droplets, Shield } from 'lucide-react';
-import AdBanner from './AdBanner';
 
 interface NutritionProps {
   data: any;
@@ -217,11 +216,6 @@ const Nutrition: React.FC<NutritionProps> = ({ data, updateData, isPremium = fal
 
       {activeTab === 'macros' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {!isPremium && (
-            <div className="md:col-span-2 lg:col-span-4 mb-4">
-              <AdBanner position="inline" onUpgrade={onUpgrade} isPremium={isPremium} />
-            </div>
-          )}
           <MacroCard
             title="Calories"
             value={todaysNutrition.calories}

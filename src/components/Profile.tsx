@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { User, Target, Calendar, Settings, Calculator } from 'lucide-react';
 import CalorieCalculator from './CalorieCalculator';
-import AdBanner from './AdBanner';
 
 interface ProfileProps {
   data: any;
@@ -199,11 +198,6 @@ const Profile: React.FC<ProfileProps> = ({ data, updateData, isPremium = false, 
         </form>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {!isPremium && (
-            <div className="lg:col-span-3 mb-6">
-              <AdBanner position="inline" onUpgrade={onUpgrade} isPremium={isPremium} />
-            </div>
-          )}
           <div className="lg:col-span-2">
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <div className="flex items-center mb-6">

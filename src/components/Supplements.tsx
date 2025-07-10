@@ -232,11 +232,6 @@ const Supplements: React.FC<SupplementsProps> = ({ data, updateData, isPremium =
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {!isPremium && data.supplements?.length > 0 && (
-          <div className="md:col-span-2 lg:col-span-3 mb-4">
-            <AdBanner position="inline" onUpgrade={onUpgrade} isPremium={isPremium} />
-          </div>
-        )}
         {data.supplements?.map((supplement: any) => {
           const info = getSupplementInfo(supplement.name);
           const taken = isTakenToday(supplement);
